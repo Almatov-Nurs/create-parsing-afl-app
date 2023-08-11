@@ -225,10 +225,10 @@ async function addPageContetn(browser, page, array, excepts_arr, tour, tourType)
     // add falls
     const falls = filtered_arr[i].falls;
     // yellow cards
-    const yellowCards = falls.filter(i => i.status === 'Желтая').map(({ player }) => player);
+    const yellowCards = falls.filter(i => /Желтая/i.test(i.status)).map(({ player }) => player);
     await addActions(newPage, 'Желтая карточка', yellowCards, versus);
     // red cards
-    const redCards = falls.filter(i => i.status === 'Краснач').map(({ player }) => player);
+    const redCards = falls.filter(i => /Красная/i.test(i.status)).map(({ player }) => player);
     await addActions(newPage, 'Красная карточка', redCards, versus);
 
     // add goals
