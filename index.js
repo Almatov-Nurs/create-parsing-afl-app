@@ -7,6 +7,8 @@ const getContent = require("./helpers/puppeteer");
     const tour = prompt('Введите тур: ');
     const division = prompt('Введите дивизион(формат - "премьер дивизион"): ');
     const tourType = prompt('Какой тур (осенний, весенний, зимний или вообще летний): ');
+    // const division = 'второй дивизион';
+    // const tourType = 'весенний';
 
     await getContent(tour, division, tourType);
   } catch (e) {

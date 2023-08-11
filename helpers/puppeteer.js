@@ -211,7 +211,7 @@ async function addPageContetn(browser, page, array, excepts_arr, tour, tourType)
 
     // select second command
     await newPage.click(tourSelect);
-    await selectYourChoice(newPage, selectorBar, `${tour} тур, ${tourType} сезон`);
+    await selectYourChoice(newPage, selectorBar, `^${tour} тур, ${tourType} сезон`);
 
     // click actions in a match
     await newPage.click(actions);
@@ -225,11 +225,18 @@ async function addPageContetn(browser, page, array, excepts_arr, tour, tourType)
     // add falls
     const falls = filtered_arr[i].falls;
     // yellow cards
-    const yellowCards = falls.filter(i => /Желтая/i.test(i.status)).map(({ player }) => player);
-    await addActions(newPage, 'Желтая карточка', yellowCards, versus);
+    const yellowCards = falls.filter(i => {
+      console.log(`\n\n ${i.status}\nplayer: ${i.player}\n`);
+      return /Желтая/i.test(i.status);
+    }).map(({ player }) => player);
+    await addActions(newPage, 'Желтая', yellowCards, versus);
+    console.log(yellowCards);
     // red cards
-    const redCards = falls.filter(i => /Красная/i.test(i.status)).map(({ player }) => player);
-    await addActions(newPage, 'Красная карточка', redCards, versus);
+    const redCards = falls.filter(i => {
+      console.log(`\n\n ${i.status}\nplayer: ${i.player}\n`);
+      return /Красная/i.test(i.status);
+    }).map(({ player }) => player);
+    await addActions(newPage, 'Красная', redCards, versus);
 
     // add goals
     const goals = filtered_arr[i].goals;
@@ -283,7 +290,7 @@ module.exports = async function getContent(tour, division, tourType) {
     tourSelect.click();
 
     // select your tour
-    const tour_regexp = `^${tour}-тур`;
+    const tour_regexp = `^${tour}.тур`;
     await selectYourChoice(page, selectorBar, tour_regexp);
 
     // open divisions select
@@ -326,7 +333,7 @@ module.exports = async function getContent(tour, division, tourType) {
 
     // select tour
     await tourAdmin.click();
-    const regTour = `${tour} тур, ${tourType}`;
+    const regTour = `^${tour} тур, ${tourType}`;
     await selectYourChoice(admin, selectorBar, regTour)
 
     // select division
@@ -337,8 +344,13 @@ module.exports = async function getContent(tour, division, tourType) {
     await admin.click(submitBtn);
 
     // filling
-    await admin.waitForSelector(resultTable);
-    const list_admin = await admin.$$(resultTable);
+    let list_admin = [];
+    try {
+      await admin.waitForSelector(resultTable);
+      list_admin = await admin.$$(resultTable);
+    } catch (e) {
+      console.log(e);
+    }
 
     const result_list_admin = [];
 

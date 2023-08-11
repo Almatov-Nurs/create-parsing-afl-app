@@ -3,7 +3,6 @@
   "version": "1.0.10",
   "description": "",
   "main": "index.js",
-  "bin": "./bin/cli.js",
   "scripts": {
     "start": "node index.js"
   },
